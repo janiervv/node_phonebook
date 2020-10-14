@@ -64,10 +64,6 @@ let persons = [
 
 
 
-  //app.get('/api/persons', (req, res) => {
-  //  res.json(persons)
-  //})
-
   app.get('/api/persons', (req, res) => {
     Person.find({}).then(person => {
       res.json(person)
@@ -75,17 +71,19 @@ let persons = [
   })
 
 
-  app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    const person = persons.find(person => person.id === id)
 
-    if (person) {
+  app.get('/api/persons/:id', (request, response) => {
+    Person.findById(request.params.id).then(person => {
+      if (person) {
         response.json(person)
       } else {
-        console.log("tulee elseen")
         response.status(404).end()
-        }
-
+      }
+    })
+    .catch(error => {
+      console.log(error)
+      response.status(500).end()
+    })
   })
 
 
@@ -96,8 +94,7 @@ let persons = [
   })
 
 
-
-  app.post('/api/persons:id', (request, response) => {
+  app.post('/api/persons', (request, response) => {
     const body = request.body
   
     if (!body.name) {
@@ -117,17 +114,22 @@ let persons = [
         error: 'Name must be unique' 
       })
     }
-
   
-    const person = {
+    const person = new Person({
       name: body.name,
       number: body.number,
       id: Math.floor(Math.random() * Math.floor(1000)),
-    }
+    })
+
+    console.log(person)
   
-    persons = persons.concat(person)
-    response.json(person)
+    person.save().then(savedPerson => { 
+      response.json(savedPerson)
+    })
   })
+
+
+
 
 
 
