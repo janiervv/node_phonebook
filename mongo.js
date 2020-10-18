@@ -21,23 +21,23 @@ const Person = mongoose.model('Person', personSchema)
 
 if (process.argv[3] !== undefined && process.argv[4] !== undefined) {
 
-const person = new Person({
-  name: process.argv[3],
-  number: process.argv[4]
-})
+  const person = new Person({
+    name: process.argv[3],
+    number: process.argv[4]
+  })
 
 
-person.save().then(response => {
-  console.log("Added " + process.argv[3] + ", number " + process.argv[4] + " to phonebook")
-  mongoose.connection.close()
-})
+  person.save().then(response => {
+    console.log('Added ' + process.argv[3] + ', number ' + process.argv[4] + ' to phonebook')
+    mongoose.connection.close()
+  })
 }
 else {
 
-Person.find({}).then(result => {
-  result.forEach(person => {
-    console.log(person)
+  Person.find({}).then(result => {
+    result.forEach(person => {
+      console.log(person)
+    })
+    mongoose.connection.close()
   })
-  mongoose.connection.close()
-})
 }
